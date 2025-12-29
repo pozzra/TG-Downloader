@@ -4,6 +4,23 @@ import yt_dlp
 import os
 import time
 import json
+from flask import Flask
+from threading import Thread
+
+# Keep Alive Server for Render
+app = Flask('')
+
+@app.route('/')
+def home():
+    return "Bot is running!"
+
+def run_http():
+    port = int(os.environ.get("PORT", 8080))
+    app.run(host='0.0.0.0', port=port)
+
+def keep_alive():
+    t = Thread(target=run_http)
+    t.start()
 
 # Main Bot (Interaction & Download)
 BOT_TOKEN = '8488156189:AAEDbwIXZF4iTLbxu2mY4oeawC69c2yt3v8'
@@ -376,6 +393,9 @@ def cleanup_storage():
 def main():
     print("🤖 Bot is running...")
     cleanup_storage()
+    
+    # Start Web Server for Render Health Check
+    keep_alive()
     
     # Set Bot Commands
     bot.set_my_commands([
